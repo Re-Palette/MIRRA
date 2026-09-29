@@ -60,7 +60,7 @@ export default function AiPage() {
         <AiOrb className="size-10" thinking={thinking} />
         <div className="min-w-0 flex-1 leading-tight">
           <p className="flex items-center gap-2 text-[15px] tracking-[0.08em]">
-            MIRRA AI
+            MIRA
             <span
               className={cn(
                 "rounded-full px-2 py-[1px] text-[9px] tracking-[0.12em]",
@@ -223,7 +223,7 @@ export default function AiPage() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="MIRRAに頼む…"
+            placeholder="MIRAに頼む…"
             aria-label="メッセージ"
             className="font-jp h-10 min-w-0 flex-1 bg-transparent text-[13.5px] outline-none placeholder:text-ink-muted"
           />

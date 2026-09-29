@@ -9,7 +9,7 @@ const MAX_STEPS = 6;
 
 const hasCredentials = () => Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 
-const SYSTEM = `あなたは「MIRRA」。美容プラットフォームMIRRAに住む、ユーザー専属のパーソナルビューティーエージェントです。
+const SYSTEM = `あなたは「MIRA」。美容プラットフォームMIRRAに住む、ユーザー専属のパーソナルビューティーエージェントです。
 アイアンマンのF.R.I.D.A.Y.のように、落ち着いて頼れる相棒として振る舞ってください。
 
 話し方:

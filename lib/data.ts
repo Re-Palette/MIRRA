@@ -7,7 +7,7 @@ export const user = {
   memberId: "0001 2345 67",
   tier: "Premium",
   since: "2024",
-  avatar: "/images/look-face.webp",
+  avatar: "/images/avatar-2.webp",
   plan: { name: "プレミアムプラン（年額）", expires: "2027/05/12" },
   stats: { visits: 12, records: 24, points: 3280 },
 };
@@ -21,14 +21,47 @@ export const weather = {
 };
 
 export const hairScore = {
-  score: 89,
-  delta: +4,
+  score: 92,
+  delta: +3,
   damage: { label: "Low", value: 18 },
   dryness: { label: "Medium", value: 52 },
   hairType: "やや乾燥・普通毛",
   lastVisit: "2026.06.12",
   lastMenu: "カラー",
 };
+
+/** Oura-style readiness breakdown shown on Home. */
+export const beautyScore = {
+  score: 92,
+  metrics: [
+    { key: "health", label: "髪の健康度", en: "Hair Health", value: 92, unit: "" },
+    { key: "damage", label: "ダメージ", en: "Damage", value: 12, unit: "%" },
+    { key: "moisture", label: "うるおい", en: "Moisture", value: 85, unit: "%" },
+    { key: "color", label: "カラーキープ", en: "Color Retention", value: 94, unit: "%" },
+  ],
+};
+
+export const member = { rank: "Platinum", linkedSalons: 2, hairType: "やや乾燥・普通毛" };
+
+export type TimelineStory = {
+  id: string;
+  date: string;
+  menu: string;
+  en: string;
+  image: string;
+  salon: string;
+  stylist: string;
+  detail: string;
+  note: string;
+};
+
+export const timeline: TimelineStory[] = [
+  { id: "t1", date: "2026.06.12", menu: "カラー", en: "Color", image: "/images/story-color.webp", salon: "Luce Hair 渋谷", stylist: "山田", detail: "A剤 20g / B剤 10g / オキシ6% / 放置25分", note: "ミルクティーベージュで透明感をプラス。" },
+  { id: "t2", date: "2026.04.20", menu: "ブリーチ", en: "Bleach", image: "/images/story-bleach.webp", salon: "Luce Hair 渋谷", stylist: "山田", detail: "ケアブリーチ 2回 / オキシ3% / 放置45分", note: "毛先は保護剤でダメージを最小限に。" },
+  { id: "t3", date: "2026.03.15", menu: "トリートメント", en: "Treatment", image: "/images/story-treatment.webp", salon: "NEUTRAL 表参道", stylist: "佐藤", detail: "TOKIO 4ステップ / 90分", note: "内部補修でツヤと手触りが回復。" },
+  { id: "t4", date: "2026.02.10", menu: "縮毛矯正", en: "Straight", image: "/images/story-cut.webp", salon: "NEUTRAL 表参道", stylist: "佐藤", detail: "GMT / アイロン160℃ / 前髪のみ", note: "根元の立ち上がりを残す自然な仕上がり。" },
+  { id: "t5", date: "2025.12.05", menu: "パーマ", en: "Perm", image: "/images/story-perm.webp", salon: "SORA 代官山", stylist: "渡辺", detail: "デジタルパーマ / 32mm / 中間〜毛先", note: "乾かすだけで決まる柔らかいカール。" },
+];
 
 export const aiAdvice = {
   headline: "湿度が高いため軽めのオイルがおすすめです",
@@ -43,24 +76,25 @@ export type Product = {
   price: number;
   kind: BottleKind;
   tag?: string;
+  reason: string;
   match: number;
 };
 
 export const products: Product[] = [
-  { id: "p1", name: "ライトヘアオイル", nameEn: "Light Hair Oil", brand: "MIRRA LAB", price: 3960, kind: "oil", tag: "今日のおすすめ", match: 98 },
-  { id: "p2", name: "リペアトリートメント", nameEn: "Repair Treatment", brand: "MIRRA LAB", price: 4180, kind: "treatment", match: 94 },
-  { id: "p3", name: "モイスチャーシャンプー", nameEn: "Moisture Shampoo", brand: "MIRRA LAB", price: 3520, kind: "shampoo", match: 91 },
-  { id: "p4", name: "ヘアミルク", nameEn: "Hair Milk", brand: "Aube", price: 2800, kind: "milk", match: 88 },
-  { id: "p5", name: "スカルプセラム", nameEn: "Scalp Serum", brand: "Aube", price: 4620, kind: "serum", match: 84 },
+  { id: "p1", name: "ライトヘアオイル", nameEn: "Light Hair Oil", brand: "MIRRA LAB", price: 3960, kind: "oil", tag: "今日のおすすめ", reason: "湿度で広がる日に", match: 98 },
+  { id: "p2", name: "リペアトリートメント", nameEn: "Repair Treatment", brand: "MIRRA LAB", price: 4180, kind: "treatment", reason: "ブリーチ毛の補修に", match: 94 },
+  { id: "p3", name: "モイスチャーシャンプー", nameEn: "Moisture Shampoo", brand: "MIRRA LAB", price: 3520, kind: "shampoo", reason: "乾燥しがちな頭皮に", match: 91 },
+  { id: "p4", name: "ヘアミルク", nameEn: "Hair Milk", brand: "Aube", price: 2800, kind: "milk", reason: "朝5分のスタイリングに", match: 88 },
+  { id: "p5", name: "スカルプセラム", nameEn: "Scalp Serum", brand: "Aube", price: 4620, kind: "serum", reason: "頭皮環境を整える", match: 84 },
 ];
 
 export const nextReservation = {
   salon: "Luce Hair 渋谷",
   stylist: "山田 美咲",
-  date: "2026.10.12",
-  weekday: "Mon",
-  time: "14:00",
-  menu: "カット + ケアカラー",
+  date: "2026.10.15",
+  weekday: "Thu",
+  time: "13:00",
+  menu: "カット・カラー・トリートメント",
   duration: "約2時間",
   daysLeft: 13,
   image: "/images/salon-1.webp",
@@ -168,7 +202,7 @@ export const hairTrend = [
   { month: "6月", score: 85 },
   { month: "7月", score: 87 },
   { month: "8月", score: 86 },
-  { month: "9月", score: 89 },
+  { month: "9月", score: 92 },
 ];
 
 export const hairMetrics = [

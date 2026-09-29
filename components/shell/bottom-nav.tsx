@@ -7,6 +7,7 @@ import { CreditCard, House, MapPin, Sparkles, UserRound, type LucideIcon } from 
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
 import { useAgent } from "@/components/agent/agent-provider";
+import { GlowOrb } from "@/components/ai/glow-orb";
 
 type Tab = { href: string; label: string; icon: LucideIcon; match: (p: string) => boolean };
 
@@ -36,7 +37,7 @@ export function BottomNav({ dark }: { dark?: boolean }) {
       >
         {tabs.map((tab) => {
           const active = tab.match(pathname);
-          if (tab.href === "/ai") return <AiFab key={tab.href} active={active} />;
+          if (tab.href === "/ai") return <AiFab key={tab.href} active={active} dark={dark} />;
           const Icon = tab.icon;
           return (
             <Link
@@ -45,28 +46,30 @@ export function BottomNav({ dark }: { dark?: boolean }) {
               aria-current={active ? "page" : undefined}
               className="relative flex h-[56px] flex-1 flex-col items-center justify-center gap-1"
             >
-              {active && (
-                <motion.span
-                  layoutId="nav-active"
-                  className={cn("absolute inset-x-1.5 inset-y-0.5 rounded-[22px]", dark ? "bg-white/10" : "bg-white shadow-soft")}
-                />
-              )}
-              <motion.span whileTap={{ scale: 0.86 }} className="relative flex flex-col items-center gap-1">
+              <motion.span whileTap={{ scale: 0.88 }} className="relative flex flex-col items-center gap-1">
                 <Icon
                   className={cn(
                     "size-[21px] transition-colors duration-300",
                     active ? (dark ? "text-white" : "text-ink") : dark ? "text-white/45" : "text-ink-muted",
                   )}
-                  strokeWidth={active ? 1.9 : 1.5}
+                  strokeWidth={active ? 1.8 : 1.4}
+                  fill={active && !dark ? "currentColor" : "none"}
+                  fillOpacity={0.08}
                 />
                 <span
                   className={cn(
-                    "text-[10px] tracking-[0.08em] transition-colors duration-300",
+                    "text-[10px] tracking-[0.04em] transition-colors duration-300",
                     active ? (dark ? "text-white" : "text-ink") : dark ? "text-white/45" : "text-ink-muted",
                   )}
                 >
                   {tab.label}
                 </span>
+                {active && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className={cn("absolute -bottom-[7px] h-[2px] w-5 rounded-full", dark ? "bg-white" : "bg-ink")}
+                  />
+                )}
               </motion.span>
             </Link>
           );
@@ -77,7 +80,7 @@ export function BottomNav({ dark }: { dark?: boolean }) {
 }
 
 /** Tap: open the AI tab. Press and hold: summon the voice agent from anywhere. */
-function AiFab({ active }: { active: boolean }) {
+function AiFab({ active, dark }: { active: boolean; dark?: boolean }) {
   const { setVoiceOpen } = useAgent();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const held = useRef(false);
@@ -88,7 +91,7 @@ function AiFab({ active }: { active: boolean }) {
   return (
     <Link
       href="/ai"
-      aria-label="MIRRA AI（長押しで音声エージェント）"
+      aria-label="MIRA（長押しで音声エージェント）"
       aria-current={active ? "page" : undefined}
       className="relative flex flex-1 justify-center select-none [-webkit-touch-callout:none]"
       onPointerDown={() => {
@@ -111,26 +114,14 @@ function AiFab({ active }: { active: boolean }) {
       }}
     >
       <motion.span
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.9 }}
-        animate={{ y: [-22, -26, -22] }}
-        transition={{ y: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-        className="relative grid size-[62px] place-items-center rounded-full"
+        className={cn("relative -translate-y-[18px] rounded-full p-[5px]", dark ? "bg-[#141a28]" : "bg-canvas")}
       >
-        {/* halo */}
-        <span className="absolute -inset-2 rounded-full bg-[conic-gradient(from_120deg,#b9c9ff,#f3d4ff,#c8f1ff,#b9c9ff)] opacity-60 blur-md" />
-        {/* ring */}
-        <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_200deg,#c9d6ff,#f6e8ff,#ffffff,#bfe3ff,#c9d6ff)] p-[2px]">
-          <span className="block size-full rounded-full bg-[radial-gradient(120%_120%_at_30%_20%,#2a3350_0%,#101828_55%,#070a12_100%)]" />
+        <GlowOrb className="size-[54px]" active={active} />
+        <span className={cn("absolute inset-x-0 -bottom-[13px] text-center text-[10px] tracking-[0.04em]", active ? (dark ? "text-white" : "text-ink") : dark ? "text-white/45" : "text-ink-muted")}>
+          AI
         </span>
-        <span className="pointer-events-none absolute inset-[3px] rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.35),transparent_45%)]" />
-        <Sparkles className="relative size-6 text-white" strokeWidth={1.6} />
-        {active && (
-          <motion.span
-            layoutId="nav-active-dot"
-            className="absolute -bottom-3 size-1 rounded-full bg-ink"
-          />
-        )}
       </motion.span>
     </Link>
   );

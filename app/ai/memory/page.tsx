@@ -43,7 +43,7 @@ export default function MemoryPage() {
             Markdown
           </button>
         </div>
-        <p className="font-jp mt-2 text-[12px] leading-[1.8] text-ink-soft">MIRRA は会話の中であなたについて学び、提案に反映します。間違っている記憶は削除できます。</p>
+        <p className="font-jp mt-2 text-[12px] leading-[1.8] text-ink-soft">MIRA は会話の中であなたについて学び、提案に反映します。間違っている記憶は削除できます。</p>
       </header>
 
       {/* profile / settings */}
@@ -131,7 +131,7 @@ export default function MemoryPage() {
                       <p className="mt-1 flex items-center gap-2 text-[10.5px] text-ink-muted">
                         <span className="tabular-nums">{m.date}</span>
                         <Badge variant={m.source === "agent" ? "default" : "lilac"} className="py-0 text-[9.5px]">
-                          {m.source === "agent" ? "MIRRAが学習" : "あなたが追加"}
+                          {m.source === "agent" ? "MIRAが学習" : "あなたが追加"}
                         </Badge>
                       </p>
                     </div>
@@ -173,7 +173,7 @@ export default function MemoryPage() {
 
           {tab === "log" && (
             <motion.div key="log" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
-              {days.length === 0 && <Empty text="まだ会話はありません。MIRRA AI に話しかけてみてください。" />}
+              {days.length === 0 && <Empty text="まだ会話はありません。MIRA に話しかけてみてください。" />}
               {days.map(([day, msgs]) => (
                 <section key={day}>
                   <p className="mb-2 px-1 text-[11px] tabular-nums tracking-[0.1em] text-ink-muted">{day}</p>
@@ -184,7 +184,7 @@ export default function MemoryPage() {
                           {new Date(m.ts).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                         <p className={cn("font-jp min-w-0 flex-1 whitespace-pre-line text-[12.5px] leading-[1.75]", m.role === "user" ? "text-ink" : "text-ink-soft")}>
-                          <span className="mr-1.5 text-[10px] tracking-[0.1em] text-ink-muted">{m.role === "user" ? (m.voice ? "あなた（音声）" : "あなた") : "MIRRA"}</span>
+                          <span className="mr-1.5 text-[10px] tracking-[0.1em] text-ink-muted">{m.role === "user" ? (m.voice ? "あなた（音声）" : "あなた") : "MIRA"}</span>
                           {m.text}
                         </p>
                       </div>

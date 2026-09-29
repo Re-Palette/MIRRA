@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn("font-sans font-light uppercase tracking-logo [margin-right:-0.42em]", className)}>
+    <span className={cn("font-brand font-light uppercase tracking-logo [margin-right:-0.42em]", className)}>
       Mirra
     </span>
   );

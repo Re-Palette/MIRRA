@@ -69,7 +69,7 @@ export function VoiceOverlay() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] tracking-[0.34em] text-white/40">PERSONAL AGENT</p>
-                  <p className="text-[17px] tracking-[0.2em]">MIRRA</p>
+                  <p className="text-[17px] tracking-[0.2em]">MIRA</p>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -165,7 +165,7 @@ export function VoiceOverlay() {
                     <input
                       value={typed}
                       onChange={(e) => setTyped(e.target.value)}
-                      placeholder="MIRRAに話しかける…"
+                      placeholder="MIRAに話しかける…"
                       aria-label="メッセージ"
                       className="font-jp h-10 min-w-0 flex-1 bg-transparent text-[13.5px] text-white outline-none placeholder:text-white/35"
                     />

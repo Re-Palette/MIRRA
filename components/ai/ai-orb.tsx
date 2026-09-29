@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-/** Living gradient sphere that represents MIRRA AI. */
+/** Living gradient sphere that represents MIRA. */
 export function AiOrb({ className, thinking }: { className?: string; thinking?: boolean }) {
   return (
     <div className={cn("relative isolate aspect-square", className)}>
