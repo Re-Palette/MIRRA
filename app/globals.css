@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Jost", "Noto Sans JP", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-jp: "Noto Sans JP", "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", "Noto Sans JP", ui-serif, Georgia, serif;
+
+  --color-canvas: #f7f8fa;
+  --color-ink: #101828;
+  --color-ink-soft: #475467;
+  --color-ink-muted: #98a2b3;
+  --color-accent: #dde8ff;
+  --color-accent-2: #f6e8ff;
+  --color-glass: rgba(255, 255, 255, 0.75);
+  --color-glass-border: rgba(255, 255, 255, 0.35);
+  --color-night: #0a0e18;
+
+  --radius-card: 28px;
+  --radius-xl2: 22px;
+
+  --shadow-soft: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px -8px rgba(16, 24, 40, 0.08);
+  --shadow-float: 0 2px 6px rgba(16, 24, 40, 0.06), 0 24px 48px -16px rgba(16, 24, 40, 0.18);
+  --shadow-glow: 0 10px 30px -6px rgba(113, 128, 255, 0.45);
+
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-shimmer: shimmer 3.2s linear infinite;
+  --animate-ripple: ripple 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @keyframes ripple {
+    0% { transform: scale(0.6); opacity: 0.7; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  @keyframes drift {
+    0% { transform: translate3d(-6%, -4%, 0) rotate(0deg) scale(1); }
+    50% { transform: translate3d(4%, 6%, 0) rotate(20deg) scale(1.08); }
+    100% { transform: translate3d(8%, -2%, 0) rotate(-10deg) scale(1.02); }
+  }
+}
+
+@layer base {
+  html,
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "palt" 1;
+  }
+  ::selection {
+    background: #c7d7ff;
+  }
+  button {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@utility glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    var(--shadow-soft);
+}
+
+@utility glass-dark {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.font-display {
+  font-feature-settings: "lnum" 1;
+}
+
+@utility tracking-logo {
+  letter-spacing: 0.42em;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
