@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { CreditCard, House, MapPin, Sparkles, UserRound, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
+import { useAgent } from "@/components/agent/agent-provider";
 
 type Tab = { href: string; label: string; icon: LucideIcon; match: (p: string) => boolean };
 
@@ -74,9 +76,40 @@ export function BottomNav({ dark }: { dark?: boolean }) {
   );
 }
 
+/** Tap: open the AI tab. Press and hold: summon the voice agent from anywhere. */
 function AiFab({ active }: { active: boolean }) {
+  const { setVoiceOpen } = useAgent();
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const held = useRef(false);
+  const cancel = () => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  };
   return (
-    <Link href="/ai" aria-label="MIRRA AI" aria-current={active ? "page" : undefined} className="relative flex flex-1 justify-center">
+    <Link
+      href="/ai"
+      aria-label="MIRRA AI（長押しで音声エージェント）"
+      aria-current={active ? "page" : undefined}
+      className="relative flex flex-1 justify-center select-none [-webkit-touch-callout:none]"
+      onPointerDown={() => {
+        held.current = false;
+        timer.current = setTimeout(() => {
+          held.current = true;
+          if ("vibrate" in navigator) navigator.vibrate?.(12);
+          setVoiceOpen(true);
+        }, 450);
+      }}
+      onPointerUp={cancel}
+      onPointerLeave={cancel}
+      onPointerCancel={cancel}
+      onContextMenu={(e) => e.preventDefault()}
+      onClick={(e) => {
+        if (held.current) {
+          e.preventDefault();
+          held.current = false;
+        }
+      }}
+    >
       <motion.span
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.9 }}

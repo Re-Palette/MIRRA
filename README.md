@@ -25,13 +25,32 @@ npm run build && npm start
 | `/salon` | Salon Matching | 検索・現在地取得・得意分野フィルター、AIマッチ率、共有レイアウトアニメーションで詳細へ遷移、メニュー／日時選択→予約完了 |
 | `/profile` | Profile | 会員カード表示、利用状況、メニュー（アカウント設定・施術履歴・購入履歴・通知設定・サロン連携・ヘルプ・ログアウト） |
 
+## Personal AI Agent（F.R.I.D.A.Y. スタイル）
+
+MIRRA AI は相談に答えるだけでなく、ユーザーを記憶し、アプリ内で代わりに動くパーソナルエージェントです。
+
+- **音声モード**：中央の AI ボタンを長押し（どの画面からでも）／AI画面のマイク。日本語の音声認識（Web Speech API）と読み上げに対応。
+- **記憶**：「〜を覚えておいて」で長期記憶に保存し、提案に反映。`/ai/memory` で一覧・追加・削除、会話ログの日別表示、Markdown 書き出し（F.R.I.D.A.Y. の Obsidian Vault と同じ構成）。
+- **アクション**：サロン予約・変更・キャンセル（承認カードで確認してから確定）、カート追加、リマインダー設定、画面遷移、商品・ケアプラン表示。
+- **ブリーフィング**：ホームに天気・髪質・予約・リマインダーをまとめた読み上げ付きブリーフィング。
+- 状態（記憶・予約・カート・リマインダー・会話ログ）はブラウザの localStorage に保存されます。
+
+### Claude で動かす
+
+`ANTHROPIC_API_KEY` を設定すると `/api/agent` が Claude（`claude-opus-5-5`、ツール使用）で応答し、ヘッダーのバッジが `LIVE` になります。未設定の場合はルールベースのデモエンジン（`lib/agent/local-engine.ts`）で動作します（バッジは `DEMO`）。
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-... npm run dev
+# 任意: MIRRA_AGENT_MODEL=claude-sonnet-5-5
+```
+
 ## Stack
 
 Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui（`components/ui`）· Framer Motion · Lucide Icons
 
 - Fonts are self-hosted via `@fontsource` (Jost / Cormorant Garamond / Noto Sans JP).
 - Design tokens live in `app/globals.css` (`@theme`): `#F7F8FA` background, `rgba(255,255,255,0.75)` glass, `#101828` primary, `#DDE8FF` / `#F6E8FF` accents, 28px radius.
-- Dummy data: `lib/data.ts`, AI canned replies: `lib/ai.ts`.
+- Dummy data: `lib/data.ts`, AI canned replies: `lib/ai.ts`, agent: `lib/agent/*`, `components/agent/*`, `app/api/agent/route.ts`.
 
 ## Project structure
 

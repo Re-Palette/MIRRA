@@ -1,6 +1,6 @@
 import { HomeHero } from "@/components/home/home-hero";
 import { ScoreCard } from "@/components/home/score-card";
-import { AdviceCard, HistoryPreview, ProductRail, ReservationCard } from "@/components/home/home-sections";
+import { AgentBriefCard, HistoryPreview, ProductRail, ReservationCard } from "@/components/home/home-sections";
 
 export default function HomePage() {
   return (
@@ -8,7 +8,7 @@ export default function HomePage() {
       <HomeHero />
       <ScoreCard />
       <div className="mt-5 space-y-9">
-        <AdviceCard />
+        <AgentBriefCard />
         <ProductRail />
         <ReservationCard />
         <HistoryPreview />

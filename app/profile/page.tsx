@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, ChevronRight, CircleHelp, Crown, History, Link2, LogOut, PenLine, Settings, ShoppingBag, type LucideIcon } from "lucide-react";
+import { Bell, BrainCircuit, ChevronRight, CircleHelp, Crown, History, Link2, LogOut, PenLine, Settings, ShoppingBag, type LucideIcon } from "lucide-react";
 import { MirraCard } from "@/components/card/mirra-card";
 import { Wordmark } from "@/components/shell/logo";
 import { ScreenHeader } from "@/components/ui/screen-header";
@@ -20,6 +20,7 @@ export default function ProfilePage() {
 
   const groups: Row[][] = [
     [
+      { icon: BrainCircuit, label: "AIエージェント（記憶・会話ログ）", href: "/ai/memory" },
       { icon: Settings, label: "アカウント設定" },
       { icon: History, label: "施術履歴", href: "/history" },
       { icon: ShoppingBag, label: "購入履歴", trailing: <span className="text-[11px] tabular-nums text-ink-muted">8件</span> },

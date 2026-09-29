@@ -8,6 +8,8 @@ import { BottomNav } from "./bottom-nav";
 import { StatusBar } from "./status-bar";
 import { BrandPanel } from "./brand-panel";
 import { cn } from "@/lib/utils";
+import { AgentProvider } from "@/components/agent/agent-provider";
+import { VoiceOverlay } from "@/components/agent/voice-overlay";
 
 const DARK_ROUTES = ["/card"];
 
@@ -24,6 +26,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <MotionConfig reducedMotion="user" transition={{ type: "spring", stiffness: 380, damping: 34 }}>
       <DeviceContext.Provider value={{ scrollRef, overlayRef }}>
+        <AgentProvider>
         <div className="relative min-h-dvh overflow-hidden lg:flex lg:items-center lg:justify-center lg:gap-14 lg:p-8">
           <Backdrop />
           <BrandPanel />
@@ -41,6 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {children}
             </div>
             <BottomNav dark={dark} />
+            <VoiceOverlay />
             <div ref={overlayRef} className="pointer-events-none absolute inset-0 z-50 [&>*]:pointer-events-auto" />
             {/* Home indicator */}
             <div
@@ -51,6 +55,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             />
           </div>
         </div>
+        </AgentProvider>
       </DeviceContext.Provider>
     </MotionConfig>
   );

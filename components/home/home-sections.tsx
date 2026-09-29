@@ -4,8 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, CalendarPlus, Check, Clock, MapPin, Plus, Sparkles } from "lucide-react";
-import { aiAdvice, history, nextReservation, products } from "@/lib/data";
+import { Bell, CalendarPlus, Check, Clock, MapPin, Mic, Pause, Play, Plus, Sparkles } from "lucide-react";
+import { AiOrb } from "@/components/ai/ai-orb";
+import { briefing } from "@/lib/agent/local-engine";
+import { history, products, salons } from "@/lib/data";
+import { useAgent } from "@/components/agent/agent-provider";
 import { Reveal } from "@/components/ui/motion";
 import { SectionTitle } from "@/components/ui/screen-header";
 import { Button } from "@/components/ui/button";
@@ -13,10 +16,15 @@ import { Badge } from "@/components/ui/badge";
 import { ProductVisual } from "@/components/ui/product-visual";
 import { cn, yen } from "@/lib/utils";
 
-export function AdviceCard() {
+export function AgentBriefCard() {
+  const { state, phase, speak, stopSpeaking, setVoiceOpen, snapshot, send, hydrated } = useAgent();
+  const text = briefing({ ...snapshot(), reservation: state.reservation, reminders: state.reminders, nickname: state.settings.nickname });
+  const speaking = phase === "speaking";
+  const open = state.reminders.filter((r) => !r.done);
+
   return (
     <Reveal className="px-4">
-      <Link href="/ai" className="group relative block overflow-hidden rounded-card p-5 shadow-soft">
+      <div className="relative overflow-hidden rounded-card p-5 shadow-soft">
         <div className="absolute inset-0 bg-[linear-gradient(125deg,#dde8ff_0%,#eef0ff_45%,#f6e8ff_100%)]" />
         <motion.div
           aria-hidden
@@ -26,27 +34,62 @@ export function AdviceCard() {
         />
         <div className="relative">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-full bg-ink text-white">
-                <Sparkles className="size-3.5" strokeWidth={1.8} />
-              </span>
-              <span className="text-[10.5px] tracking-[0.28em] text-ink/60">TODAY&apos;S AI ADVICE</span>
+            <div className="flex items-center gap-2.5">
+              <AiOrb className="size-8" thinking={speaking} />
+              <div className="leading-tight">
+                <p className="text-[10.5px] tracking-[0.28em] text-ink/60">MIRRA BRIEFING</p>
+                <p className="font-jp text-[11px] text-ink/50">あなた専属エージェントより</p>
+              </div>
             </div>
-            <ArrowUpRight className="size-4 text-ink/50 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => (speaking ? stopSpeaking() : speak(text))}
+              aria-label={speaking ? "読み上げを止める" : "ブリーフィングを読み上げる"}
+              className="grid size-10 place-items-center rounded-full bg-ink text-white shadow-glow"
+            >
+              {speaking ? <Pause className="size-4 fill-current" /> : <Play className="ml-0.5 size-4 fill-current" />}
+            </motion.button>
           </div>
-          <p className="font-jp mt-4 text-[17px] font-normal leading-[1.6] tracking-[0.04em] text-balance">「{aiAdvice.headline}」</p>
-          <p className="font-jp mt-2.5 text-[12px] font-light leading-[1.85] text-ink/65">{aiAdvice.body}</p>
-          <div className="mt-4 flex items-center gap-2 text-[11.5px] text-ink/70">
-            <span className="rounded-full bg-white/70 px-3 py-1.5 backdrop-blur">MIRRA AI に相談する</span>
+
+          <p className="font-jp mt-4 text-[13.5px] font-normal leading-[1.9] tracking-[0.02em] text-ink/85">{text}</p>
+
+          {hydrated && open.length > 0 && (
+            <div className="mt-3 space-y-1.5">
+              {open.slice(0, 2).map((r) => (
+                <p key={r.id} className="font-jp flex items-center gap-2 rounded-[14px] bg-white/60 px-3 py-2 text-[11.5px] text-ink/75">
+                  <Bell className="size-3.5 text-[#8b7bff]" />
+                  {r.title}
+                  <span className="ml-auto text-[10.5px] text-ink/50">{r.when}</span>
+                </p>
+              ))}
+            </div>
+          )}
+
+          <div className="no-scrollbar -mx-5 mt-4 flex gap-2 overflow-x-auto px-5">
+            <button onClick={() => setVoiceOpen(true)} className="font-jp flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-[11.5px] text-white">
+              <Mic className="size-3.5" />
+              話しかける
+            </button>
+            {["ライトヘアオイルをカートに入れて", "今夜21時にオイルをリマインドして"].map((q) => (
+              <Link
+                key={q}
+                href="/ai"
+                onClick={() => void send(q)}
+                className="font-jp shrink-0 rounded-full bg-white/75 px-3.5 py-2 text-[11.5px] text-ink/75 backdrop-blur"
+              >
+                {q}
+              </Link>
+            ))}
           </div>
         </div>
-      </Link>
+      </div>
     </Reveal>
   );
 }
 
 export function ProductRail() {
-  const [added, setAdded] = useState<Record<string, boolean>>({});
+  const { state, dispatch } = useAgent();
+  const added = Object.fromEntries(state.cart.map((c) => [c.productId, true])) as Record<string, boolean>;
   return (
     <Reveal>
       <SectionTitle
@@ -77,8 +120,8 @@ export function ProductRail() {
                 <span className="text-[13px] tabular-nums">{yen(p.price)}</span>
                 <motion.button
                   whileTap={{ scale: 0.85 }}
-                  onClick={() => setAdded((a) => ({ ...a, [p.id]: !a[p.id] }))}
-                  aria-label={added[p.id] ? "カートから削除" : "カートに追加"}
+                  onClick={() => !added[p.id] && dispatch({ t: "apply", action: { type: "add_to_cart", productId: p.id } })}
+                  aria-label={added[p.id] ? "カートに追加済み" : "カートに追加"}
                   className={cn(
                     "grid size-8 place-items-center rounded-full transition-colors duration-300",
                     added[p.id] ? "bg-[#e3f6ec] text-[#1f7a4d]" : "bg-ink text-white",
@@ -105,28 +148,57 @@ export function ProductRail() {
   );
 }
 
+const WEEK_EN = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
 export function ReservationCard() {
-  const r = nextReservation;
+  const { state } = useAgent();
   const [saved, setSaved] = useState(false);
+  const r = state.reservation;
+
+  if (!r) {
+    return (
+      <Reveal>
+        <SectionTitle en="NEXT APPOINTMENT" title="次回のご予約" />
+        <div className="px-4">
+          <div className="glass flex items-center gap-4 rounded-card p-5">
+            <p className="font-jp flex-1 text-[13px] leading-[1.8] text-ink-soft">
+              予約は入っていません。
+              <br />
+              MIRRA に「来週末にカットを予約して」と頼めます。
+            </p>
+            <Button size="sm" asChild>
+              <Link href="/salon">探す</Link>
+            </Button>
+          </div>
+        </div>
+      </Reveal>
+    );
+  }
+
+  const [y, mo, d] = r.date.split(".").map(Number);
+  const when = new Date(y, mo - 1, d);
+  const daysLeft = Math.max(0, Math.ceil((when.getTime() - new Date().setHours(0, 0, 0, 0)) / 86400000));
+  const salon = salons.find((x) => x.id === r.salonId);
+
   return (
     <Reveal>
       <SectionTitle en="NEXT APPOINTMENT" title="次回のご予約" />
       <div className="px-4">
-        <div className="relative overflow-hidden rounded-card bg-ink p-5 text-white shadow-float">
+        <motion.div key={r.date + r.time + r.salonId} initial={{ opacity: 0.4, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="relative overflow-hidden rounded-card bg-ink p-5 text-white shadow-float">
           <div className="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-[#5b6cff]/30 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-28 left-10 size-64 rounded-full bg-[#d59bff]/20 blur-3xl" />
           <div className="relative flex items-start justify-between">
             <div>
-              <p className="text-[10px] tracking-[0.3em] text-white/45">{r.weekday.toUpperCase()}</p>
+              <p className="text-[10px] tracking-[0.3em] text-white/45">{WEEK_EN[when.getDay()]}</p>
               <p className="font-display mt-1 text-[40px] font-light leading-none tabular-nums">
-                {r.date.slice(5).replace(".", ".")}
+                {r.date.slice(5)}
                 <span className="ml-2 text-[22px] text-white/70">{r.time}</span>
               </p>
             </div>
             <div className="rounded-[16px] border border-white/10 bg-white/5 px-3 py-2 text-center backdrop-blur">
               <p className="text-[9px] tracking-[0.2em] text-white/50">あと</p>
               <p className="text-[20px] leading-tight tabular-nums">
-                {r.daysLeft}
+                {daysLeft}
                 <span className="ml-0.5 text-[10px] text-white/60">日</span>
               </p>
             </div>
@@ -134,7 +206,7 @@ export function ReservationCard() {
 
           <div className="relative mt-5 flex items-center gap-3 rounded-[20px] bg-white/[0.06] p-2.5">
             <div className="relative size-14 shrink-0 overflow-hidden rounded-[14px]">
-              <Image src={r.image} alt="" fill sizes="56px" className="object-cover" />
+              <Image src={salon?.stylists[0].image ?? "/images/salon-1.webp"} alt="" fill sizes="56px" className="object-cover" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[14px]">{r.salon}</p>
@@ -142,11 +214,11 @@ export function ReservationCard() {
               <div className="mt-1 flex items-center gap-3 text-[10.5px] text-white/55">
                 <span className="flex items-center gap-1">
                   <Clock className="size-3" />
-                  {r.duration}
+                  {salon?.hours ?? "—"}
                 </span>
                 <span className="flex items-center gap-1">
                   <MapPin className="size-3" />
-                  1.2 km
+                  {salon?.distance ?? "—"}
                 </span>
               </div>
             </div>
@@ -166,7 +238,7 @@ export function ReservationCard() {
               {saved ? "追加しました" : "カレンダー"}
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </Reveal>
   );
